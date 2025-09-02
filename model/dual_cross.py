@@ -19,7 +19,7 @@ class CrossBlock(nn.Module):
         return H+H2, A+A2
 
 class DualCrossTemporal(nn.Module):
-    def __init__(self, num_tokens: int, d_in=9, d_model=128, heads=4, layers=2, temp_layers=4,
+    def __init__(self, num_tokens: int, d_in=11, d_model=128, heads=4, layers=2, temp_layers=4,
                  n_types=8, n_subtypes=16, n_actors=24):
         super().__init__()
         self.embed = nn.Linear(d_in, d_model)

@@ -29,8 +29,8 @@ def collate(batch):
 def train_loop(home_csv, away_csv, events_csv,
                data_cfg=DataCfg(), model_cfg=ModelCfg(), train_cfg=TrainCfg(),
                save_dir="/mnt/data/soccer_event/artifacts"):
-    tr = parse_tracking_clean(home_csv, away_csv)
     ev = parse_events_clean(events_csv)
+    tr = parse_tracking_clean(home_csv, away_csv, events_df=ev.df)
     ds = SoccerDataset(tr, ev, window_s=data_cfg.window_s, stride_s=data_cfg.stride_s, det_tol_s=data_cfg.det_tol_s)
     dl = DataLoader(ds, batch_size=train_cfg.batch_size, shuffle=True, collate_fn=collate)
     num_tokens = ds.NTOK
@@ -63,7 +63,7 @@ def train_loop(home_csv, away_csv, events_csv,
     print("Training finished.")
 
 if __name__ == "__main__":
-    home = "/mnt/data/tracking_home.csv"
-    away = "/mnt/data/tracking_away.csv"
-    events = "/mnt/data/events.csv"
+    home = "../sample-data/data/tracking_home.csv"
+    away = "../sample-data/data/tracking_away.csv"
+    events = "../sample-data/data/events.csv"
     train_loop(home, away, events)

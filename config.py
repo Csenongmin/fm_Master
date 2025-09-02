@@ -10,7 +10,7 @@ class DataCfg:
 
 @dataclass
 class ModelCfg:
-    d_in: int = 9
+    d_in: int = 11          # [x,y,vx,vy, team(2), is_ball, period(2), present, sub]
     d_model: int = 128
     heads: int = 4
     layers: int = 2
