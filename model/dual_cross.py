@@ -20,7 +20,7 @@ class CrossBlock(nn.Module):
 
 class DualCrossTemporal(nn.Module):
     def __init__(self, num_tokens: int, d_in=11, d_model=128, heads=4, layers=2, temp_layers=4,
-                 n_types=8, n_subtypes=16, n_actors=24):
+                 n_types=8, n_actors=24):
         super().__init__()
         self.embed = nn.Linear(d_in, d_model)
         self.pos_tok = nn.Parameter(torch.randn(1, num_tokens, d_model))
@@ -33,7 +33,6 @@ class DualCrossTemporal(nn.Module):
         )
         self.det_head = DetHead(d_model)
         self.type_head = ClassHead(d_model, n_types)
-        self.sub_head  = ClassHead(d_model, n_subtypes)
         self.from_head = ActorHead(d_model, n_actors)
         self.to_head   = ActorHead(d_model, n_actors)
 
@@ -58,7 +57,6 @@ class DualCrossTemporal(nn.Module):
         h = self.temporal(frame + pe)
         det = self.det_head(h)
         typ = self.type_head(h)
-        sub = self.sub_head(h)
         frm = self.from_head(h)
         to  = self.to_head(h)
-        return det, typ, sub, frm, to
+        return det, typ, frm, to

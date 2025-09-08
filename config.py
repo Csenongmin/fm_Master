@@ -10,7 +10,7 @@ class DataCfg:
 
 @dataclass
 class ModelCfg:
-    d_in: int = 11          # [x,y,vx,vy, team(2), is_ball, period(2), present, sub]
+    d_in: int = 11
     d_model: int = 128
     heads: int = 4
     layers: int = 2
@@ -24,6 +24,5 @@ class TrainCfg:
     max_steps: int = 200
     wd_det: float = 2.0
     wd_type: float = 1.0
-    wd_sub: float = 1.0
     wd_from: float = 1.0
     wd_to: float = 1.0

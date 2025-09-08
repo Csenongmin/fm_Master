@@ -59,8 +59,8 @@ def image_cropping(images):
             os.makedirs(output_folder)
 
         # 자를 영역 정의 (y_start:y_end, x_start:x_end) - 원하는 영역으로 변경 가능
-        y_start, y_end = 150, 600   # 높이 (세로)
-        x_start, x_end = 914, 1618 # 너비 (가로)
+        y_start, y_end = 150, 604   # 높이 (세로)
+        x_start, x_end = 914, 1620 # 너비 (가로)
 
         # 파일 리스트 가져오기
         image_files = sorted([f for f in os.listdir(input_folder) if f.startswith("frame_")])
@@ -87,5 +87,5 @@ def image_cropping(images):
 
         print("✅ 모든 이미지 크롭 완료!")
 
-image_capture(data)
+#image_capture(data)
 image_cropping(data)
