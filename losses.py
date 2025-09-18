@@ -1,24 +1,58 @@
 
 import torch
 import torch.nn as nn
+from typing import Optional
 
 class MultiTaskLoss(nn.Module):
-    def __init__(self, w_det=2.0, w_type=1.0, w_from=1.0, w_to=1.0):
+    """
+    - pred_type: (B, n_types), target_type: (B,)
+    - pred_actor: (B, n_actors), target_actor: (B,)
+    - no_event_class: target_type이 이 값일 때 actor loss를 제외
+    """
+    def __init__(
+            self, w_type: float = 1.0, w_actor: float = 1.0, 
+            type_class_weights: Optional[torch.Tensor] = None,  
+            no_event_class: int = 0,
+            label_smoothing: float = 0.0,
+    ):
         super().__init__()
-        self.bce = nn.BCEWithLogitsLoss()
-        self.ce  = nn.CrossEntropyLoss(ignore_index=-1)
-        self.wd, self.wt, self.wf, self.wto = w_det, w_type, w_from, w_to
+        #타입 CE: 클래스 가중치/라벨 스무딩 지원
+        self.ce_type = nn.CrossEntropyLoss(
+            weight=type_class_weights,
+            label_smoothing=label_smoothing if label_smoothing > 0 else 0.0,
+            reduction="mean",
+        )
+        # 액터 CE: 마스킹 위해 per-sample loss로 받아서 평균
+        self.ce_actor = nn.CrossEntropyLoss(reduction="none")
 
-    def forward(self, out, tgt):
-        det_logits, typ_logits, frm_logits, to_logits = out
-        det_t, typ_t, frm_t, to_t = tgt
-        Ld = self.bce(det_logits, det_t)
-        Lt = self.ce(typ_logits[typ_t>=0], typ_t[typ_t>=0]) if (typ_t>=0).any() else typ_logits.sum()*0
-        Lf = self.ce(frm_logits[frm_t>=0], frm_t[frm_t>=0]) if (frm_t>=0).any() else frm_logits.sum()*0
-        Lto= self.ce(to_logits[to_t>=0], to_t[to_t>=0])   if (to_t>=0).any() else to_logits.sum()*0
-        L = self.wd*Ld + self.wt*Lt + self.wf*Lf + self.wto*Lto
-        logs = {"det": float(Ld.item()), "type": float(Lt.item() if (typ_t>=0).any() else 0.0),
-                "from": float(Lf.item() if (frm_t>=0).any() else 0.0),
-                "to": float(Lto.item() if (to_t>=0).any() else 0.0),
-                "total": float(L.item())}
-        return L, logs
+        self.w_type = float(w_type)
+        self.w_actor = float(w_actor)
+        self.no_event_class = int(no_event_class)
+       
+        
+
+    def forward(self, predictions: tuple, targets: tuple):
+        pred_type, pred_actor = predictions
+        target_type, target_actor = targets  # (B,), dtype long
+        # ----- Type loss -----
+        loss_type = self.ce_type(pred_type, target_type)
+
+        
+         # ----- Actor loss (mask NoEvent) -----
+        pos_mask = (target_type != self.no_event_class)  # (B,)
+        if pos_mask.any():
+            per_sample = self.ce_actor(pred_actor, target_actor)  # (B,)
+            loss_actor = per_sample[pos_mask].mean()
+        else:
+            # zero scalar on the right device
+            loss_actor = pred_actor.sum() * 0.0
+
+        total_loss = self.w_type * loss_type + self.w_actor * loss_actor
+
+        logs = {
+            "loss_type": float(loss_type.detach().item()),
+            "loss_actor": float(loss_actor.detach().item()),
+            "total_loss": float(total_loss.detach().item()),
+            "actor_pos_frac": float(pos_mask.float().mean().item()),
+        }
+        return total_loss, logs
