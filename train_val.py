@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from sklearn.metrics import f1_score
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from sklearn.model_selection import GroupKFold
 from torch.utils.data import DataLoader
 import os, re, glob
@@ -371,8 +371,6 @@ if __name__ == '__main__':
         cls_counts = np.bincount(y_tr, minlength=len(LABEL2ID))   
         inv = 1.0 / np.clip(cls_counts, 1, None)
         class_weights = torch.tensor(inv / inv.sum() * len(inv), dtype=torch.float32)
-
-        
         n_classes = len(LABEL2ID)
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -408,6 +406,27 @@ if __name__ == '__main__':
 
         print(classification_report(y_true, preds_va, target_names=[ID2LABEL[i] for i in range(len(ID2LABEL))]))
         print(confusion_matrix(y_true, preds_va))
+    
+        non_shoot = [c for c in ('dribbling','idle','passing') if c in LABEL2ID]
+        non_ids   = [LABEL2ID[c] for c in non_shoot]
+
+        mask = np.isin(y_true, non_ids)        # 정답이 shooting이 아닌 행만 선택
+        y_true_ns = y_true[mask]
+        y_pred_ns = preds_va[mask]
+        print("== Without shooting ==")
+        print(classification_report(
+            y_true_ns, y_pred_ns,
+            labels=non_ids,
+            target_names=[ID2LABEL[i] for i in non_ids],
+            digits=3, zero_division=0
+        ))
+        print("Macro-F1 (no shooting):", f1_score(y_true_ns, y_pred_ns, average='macro'))
+        print("Weighted-F1 (no shooting):", f1_score(y_true_ns, y_pred_ns, average='weighted'))
+        print("Accuracy (no shooting):", accuracy_score(y_true_ns, y_pred_ns))
+        print("Confusion matrix (no shooting):\n",
+            confusion_matrix(y_true_ns, y_pred_ns, labels=non_ids))
+
+
         fold_metrics.append(f1_macro)
         kept_models.append(copy.deepcopy(model))
         kept_scalers.append(copy.deepcopy(scaler))
