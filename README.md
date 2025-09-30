@@ -24,8 +24,8 @@
 
 ### 3. 시스템 설계
 #### 3.1. 시스템 구성도
-> 이미지 혹은 텍스트로 시스템 아키텍쳐 작성
->
+><img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
+![Alt text](image URL "Optional title")
 #### 3.2. 사용 기술
 > - 프로그래밍 언어: Python 3.10.18
 > - 개발 도구: Jupyter Notebook, VS code
@@ -77,7 +77,7 @@
 
 ### 6. 소개 자료 및 시연 영상
 #### 6.1. 프로젝트 소개 자료
-> PPT 등
+> 
 
 [![2025 전기 졸업과제 15 fm마스터](http://img.youtube.com/vi/DlT91KUyxKE/3.jpg)](https://www.youtube.com/watch?v=DlT91KUyxKE)    
 
