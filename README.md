@@ -38,12 +38,12 @@
 
 ### 4. 개발 결과
 #### 4.1. 전체 시스템 흐름도
-1. Fm in-game data extracting
+1. Fm in-game data extracting<br>
 <img src="https://github.com/user-attachments/assets/631ea624-c7e6-4e22-b49f-201934e32cbc" width="600px" title="Title" alt="Alt text"></img>
 </br>
-2. Model architecture
+2. Model architecture <br>
 <img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
-
+</br>
 #### 4.2. 기능 설명 및 주요 기능 명세서
 
 |요구사항|기능|상세 설명|
