@@ -1,6 +1,6 @@
 # ⚽ Football Tracking data를 이용하여 Events data 예측 및 분석
 2025 전기 졸업과제 fm 마스터
----
+
 ###  프로젝트 개요
 #### 1.1. 국내외 시장 현황 및 문제점
 > 현대 스포츠에서는 **트래킹 데이터**(선수 위치 및 움직임 정보)가 경기 전략 수립과 해석의 핵심 요소로 떠오르고 있습니다. 특히 축구에서는 22명의 선수와 공이 끊임없이 상호작용하기 때문에, 단순 이벤트 기록으로는 한계가 있으며 **시공간 데이터를 기반으로 한 정밀한 분석**이 필요합니다. 이에 따른 많은 연구가 진행되어야 스포츠 분야가 더 발전할 수 있다고 생각합니다.
@@ -29,23 +29,24 @@
 <img src="https://github.com/user-attachments/assets/de4a8e9a-f096-4264-a9b7-a1e5031f8558" width="600px" title="Title" alt="Alt text"></img>
 
 #### 3.2. 사용 기술
-> - 프로그래밍 언어: Python 3.10.18
-> - 개발 도구: Jupyter Notebook, VS code
-> - Fm data 추출: Yolov8
-> - Event 예측 모델: Transformer, CNN, TCN
-> - 가상환경: conda
-> - PyTorch(nn/optim), scikit-learn(StandardScaler, GroupKFold, metrics), Metrica sports, Floodlight.io.dfl
+ - 프로그래밍 언어: Python 3.10.18
+ - 개발 도구: Jupyter Notebook, VS code
+ - Fm data 추출: Yolov8
+ - Event 예측 모델: Transformer, CNN, TCN
+ - 가상환경: conda
+ - PyTorch(nn/optim), scikit-learn(StandardScaler, GroupKFold, metrics), Metrica sports, Floodlight.io.dfl
 
 ### 4. 개발 결과
 #### 4.1. 전체 시스템 흐름도
 1. Fm in-game data extracting
+
 <img src="https://github.com/user-attachments/assets/631ea624-c7e6-4e22-b49f-201934e32cbc" width="600px" title="Title" alt="Alt text"></img>
 2. Model architecture
+
 <img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
 
 #### 4.2. 기능 설명 및 주요 기능 명세서
-1. fmdata_extracting
-- Football manager 영상을 캡쳐하고 cropping합니다.
+
 |요구사항|기능|상세 설명|
 |------|---|---|
 |FM 인게임 이미지 처리|image_processing/cropping |OpenCV기반 25fps 이미지 캡쳐 및 cropping.|
