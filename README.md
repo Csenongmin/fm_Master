@@ -39,10 +39,9 @@
 ### 4. 개발 결과
 #### 4.1. 전체 시스템 흐름도
 1. Fm in-game data extracting
-
 <img src="https://github.com/user-attachments/assets/631ea624-c7e6-4e22-b49f-201934e32cbc" width="600px" title="Title" alt="Alt text"></img>
+</br>
 2. Model architecture
-
 <img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
 
 #### 4.2. 기능 설명 및 주요 기능 명세서
@@ -98,9 +97,9 @@ pip install -r requirements.txt
 #### Usage
 1. Download the raw data [here](https://springernature.figshare.com/articles/dataset/An_integrated_dataset_of_spatiotemporal_and_event_data_in_elite_soccer/28196177)
 2. Remove invalid dataset start with ID DFL-MAT-J03WN1.
-3. Run train_valid.py
+3. Run `train_valid.py`
 ```
-cd your/path/to/fmMaster
+cd your/path/to/fm_Master
 ```
 #### 5.2. 오류 발생 시 해결 방법
 floodlight.io 라이브러리를 사용할 때 파이썬 버전 충돌이 일어날 수 있는데, 그럴 때에는 파이썬을 지우고 버전을 3.9.xx로 낮춰서 진행한다.
