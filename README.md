@@ -79,7 +79,7 @@
 #### 6.1. 프로젝트 소개 자료
 > PPT 등
 
-[![2025 전기 졸업과제 15 fm마스터](http://img.youtube.com/vi/DlT91KUyxKE/0.jpg)](https://www.youtube.com/watch?v=DlT91KUyxKE)    
+[![2025 전기 졸업과제 15 fm마스터](http://img.youtube.com/vi/DlT91KUyxKE/3.jpg)](https://www.youtube.com/watch?v=DlT91KUyxKE)    
 
 ### 7. 팀 구성
 #### 7.1. 팀원별 소개 및 역할 분담
