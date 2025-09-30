@@ -1,5 +1,6 @@
-# ⚽ Football Event Prediction using Tracking Data
+# ⚽ Football Tracking data를 이용하여 Events data 예측 및 분석
 2025 전기 졸업과제 fm 마스터
+---
 ###  프로젝트 개요
 #### 1.1. 국내외 시장 현황 및 문제점
 > 현대 스포츠에서는 **트래킹 데이터**(선수 위치 및 움직임 정보)가 경기 전략 수립과 해석의 핵심 요소로 떠오르고 있습니다. 특히 축구에서는 22명의 선수와 공이 끊임없이 상호작용하기 때문에, 단순 이벤트 기록으로는 한계가 있으며 **시공간 데이터를 기반으로 한 정밀한 분석**이 필요합니다. 이에 따른 많은 연구가 진행되어야 스포츠 분야가 더 발전할 수 있다고 생각합니다.
@@ -8,7 +9,6 @@
 #### 1.2. 필요성과 기대효과
 > 본 프로젝트는 **트래킹 데이터를 통해 축구 경기 중 발생하는 이벤트(패스, 슈팅, 태클 등)를 예측하고 분석하는 시스템**을 연구함으로써, 기존에 축구 데이터를 일일이 수집하던 것을 넘어 생성형 AI 등으로 완전한 축구 경기를 직접 만들어낼 수 있는 시스템에 기여하고자 합니다.
 
----
 
 ### 2. 개발 목표
 #### 2.1. 목표 및 세부 내용
@@ -22,24 +22,37 @@
 #### 2.3. 사회적 가치 도입 계획 
 > 저희가 연구한 모델은 아직 미비하지만, 더 많은 연구가 이뤄진다면 더 쉽게 축구 데이터를 수집함으로써 더 나아가 데이터를 생성하는데에 기여할 수 있을 것이라고 생각합니다.
 
+
+
 ### 3. 시스템 설계
 #### 3.1. 시스템 구성도
-><img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
-![Alt text](image URL "Optional title")
+<img src="https://github.com/user-attachments/assets/de4a8e9a-f096-4264-a9b7-a1e5031f8558" width="600px" title="Title" alt="Alt text"></img>
+
 #### 3.2. 사용 기술
 > - 프로그래밍 언어: Python 3.10.18
 > - 개발 도구: Jupyter Notebook, VS code
 > - Fm data 추출: Yolov8
+> - Event 예측 모델: Transformer, CNN, TCN
 > - 가상환경: conda
-> - PyTorch(nn/optim), scikit-learn(StandardScaler, GroupKFold, metrics) 
+> - PyTorch(nn/optim), scikit-learn(StandardScaler, GroupKFold, metrics), Metrica sports, Floodlight.io.dfl
 
 ### 4. 개발 결과
 #### 4.1. 전체 시스템 흐름도
-> 기능 흐름 설명 및 도식화 가능
->
+1. Fm in-game data extracting
+<img src="https://github.com/user-attachments/assets/631ea624-c7e6-4e22-b49f-201934e32cbc" width="600px" title="Title" alt="Alt text"></img>
+2. Model architecture
+<img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
+
 #### 4.2. 기능 설명 및 주요 기능 명세서
-> 주요 기능에 대한 상세 설명, 각 기능의 입력/출력 및 설명
->
+1. fmdata_extracting
+- Football manager 영상을 캡쳐하고 cropping합니다.
+|요구사항|기능|상세 설명|
+|------|---|---|
+|FM 인게임 이미지 처리|image_processing/cropping |OpenCV기반 25fps 이미지 캡쳐 및 cropping.|
+|FM 인게임 데이터 추출|movement2cords, interpolating, filter, ball2cord|선수: OpenCV기반 객체 탐지 및 interpolating, 공: Yolov8 탐지|
+|모델학습 데이터셋|data_processing, visualization|Floodlight.io.dfl 기반 xml data 처리 프로세스|
+|모델 설계 및 시각화|ball_dat, ball_state_viz, model/train_val|Transformer 기반 모델 설계 및 시각화 plot|
+
 #### 4.3. 디렉토리 구조
 ```
 📦fmMaster
@@ -66,14 +79,30 @@
 ```
  
 #### 4.4. 산업체 멘토링 의견 및 반영 사항
-> 멘토 피드백과 적용한 사례 정리
+1. FM2024 공과 선수의 싱크 문제: 칼만 필터 및 사비츠키-골레이 필터와 같은 보간법으로 어느정도 해결.
+2. 데이터 증강 세미 자동 라벨링 도구: Labeling 범위를 공의 event에 집중하는 것으로 바꿔서 pass와 dribbling, shooting 그 외로 줄여 자동 라벨링 수행.
+3. 모델 Baseline 추가: Conv1D, TCN, Transformer 모델로 수행.
 
 ### 5. 설치 및 실행 방법
->
-#### 5.1. 설치절차 및 실행 방법
-> 설치 명령어 및 준비 사항, 실행 명령어, 포트 정보 등
+
+#### Installation
+FM in-game data 추출은 해당 게임이 있어야하고 선수와 공의 인게임 촬영 방식도 달라 제외한다.
+
+Use conda to create a virtual environment and pip to install the requirements.
+```
+conda create --name fmMaster python==3.10.18
+conda activate fmMaster
+pip install -r requirements.txt
+```
+#### Usage
+1. Download the raw data [here](https://springernature.figshare.com/articles/dataset/An_integrated_dataset_of_spatiotemporal_and_event_data_in_elite_soccer/28196177)
+2. Remove invalid dataset start with ID DFL-MAT-J03WN1.
+3. Run train_valid.py
+```
+cd your/path/to/fmMaster
+```
 #### 5.2. 오류 발생 시 해결 방법
-> 선택 사항, 자주 발생하는 오류 및 해결책 등
+floodlight.io 라이브러리를 사용할 때 파이썬 버전 충돌이 일어날 수 있는데, 그럴 때에는 파이썬을 지우고 버전을 3.9.xx로 낮춰서 진행한다.
 
 ### 6. 소개 자료 및 시연 영상
 #### 6.1. 프로젝트 소개 자료
