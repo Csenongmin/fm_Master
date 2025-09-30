@@ -37,7 +37,7 @@
 > 주요 기능에 대한 상세 설명, 각 기능의 입력/출력 및 설명
 >
 #### 4.3. 디렉토리 구조
-'''
+```
 📦fmMaster
  ┣ 📂data
  ┣ 📂fmdata_extracting
@@ -59,7 +59,7 @@
  ┣ 📜ball_state_viz.py
  ┣ 📜README.md
  ┗ 📜train_val.py
- '''
+```
  
 #### 4.4. 산업체 멘토링 의견 및 반영 사항
 > 멘토 피드백과 적용한 사례 정리
