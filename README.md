@@ -38,12 +38,14 @@
 
 ### 4. 개발 결과
 #### 4.1. 전체 시스템 흐름도
+
 1. Fm in-game data extracting<br>
 <img src="https://github.com/user-attachments/assets/631ea624-c7e6-4e22-b49f-201934e32cbc" width="600px" title="Title" alt="Alt text"></img>
 </br>
 2. Model architecture <br>
 <img src="https://github.com/user-attachments/assets/fc68b4eb-1802-4be1-bd1b-f4bdf08cef05" width="600px" title="Title" alt="Alt text"></img>
 </br>
+
 #### 4.2. 기능 설명 및 주요 기능 명세서
 
 |요구사항|기능|상세 설명|
@@ -106,28 +108,36 @@ floodlight.io 라이브러리를 사용할 때 파이썬 버전 충돌이 일어
 
 ### 6. 소개 자료 및 시연 영상
 #### 6.1. 프로젝트 소개 자료
-> 
+> [PPT]()
 
+#### 6.2 프로젝트 홍보 영상
 [![2025 전기 졸업과제 15 fm마스터](http://img.youtube.com/vi/DlT91KUyxKE/3.jpg)](https://www.youtube.com/watch?v=DlT91KUyxKE)    
 
 ### 7. 팀 구성
 #### 7.1. 팀원별 소개 및 역할 분담
-> - 202055614 최성민
-> - 202055502 강동권
-#### 7.2. 팀원 별 참여 후기
-> 개별적으로 느낀 점, 협업, 기술적 어려움 극복 사례 등
+|학번|성명|역할|
+|---|---|---|
+|202055614|최성민|FM2024 인게임 Ball data 추출, 이벤트 예측 모델 설계 및 학습, Feature Engineering 및 labeling, github page 관리|
+|202055502|강동권|FM2024 인게임 촬영 및 캡쳐링, 데이터셋 preprocessing. 모델 survey|
 
+#### 7.2. 팀원 별 참여 후기
+- 최성민: 스포츠 데이터를 딥러닝 모델 학습을 위해서 가공하는 것이 쉬운 일이 아니었다. 또한, 영상 캡처를 통해서 데이터셋을 만드는 과정이 생각한 것보다 쉽지 않았다. 산업체 멘토링을 통해서 조언받은대로 베이스라인 모델을 만들어서 같이 비교군을 만들어 연구를 하는 것이 도움이 되었다.
+- 강동권: 평범한 게임이나 스포츠를 통해서 이러한 학문적인 가치를 찾아 연구를 하게 된 것이 뜻 깊었고, 앞으로 석사 연구에 큰 도움과 경험이 될 것 같다.
 ### 8. 참고 문헌 및 출처
+
 **데이터 출처**: 본 프로젝트는 다음 논문에서 제공하는 공개 축구 트래킹 데이터를 활용합니다.  
 > Bassek, M., Rein, R., Weber, H., & Memmert, D. (2025). *An integrated dataset of spatiotemporal and event data in elite soccer*. *Scientific Data*, 12(1), 195.
+> [Metrica sports IO code](https://github.com/metrica-sports/sample-data)
+
 ---
 
 ## 🚧 진행 현황
-- [x] 트래킹 데이터 수집
-- [x] 기본 전처리 및 가공
+- [x] 축구 트래킹 데이터 수집
+- [x] 학습을 위해 기본 전처리 및 가공
 - [x] 딥러닝 모델 설계 및 학습
 - [x] 이벤트 예측 결과 분석
-
+- [x] FM 인게임 데이터 수집 및 가공
+- [x] Yolo 모델 학습
 
 ---
 
