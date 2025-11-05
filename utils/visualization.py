@@ -12,8 +12,7 @@ plt.style.use("ggplot")
 def load_data(path, file_name_pos, file_name_infos, file_name_events):
     xy_objects, possession, ballstatus, teamsheets, pitch = read_position_data_xml(f"{path}{file_name_pos}", f"{path}{file_name_infos}")
     events, _, _ = read_event_data_xml(f"{path}{file_name_events}", f"{path}{file_name_infos}")
-    xy_objects["firstHalf"]["Home"].rotate(180)
-    xy_objects["secondHalf"]["Away"].rotate(180)
+
     return xy_objects, events, pitch, possession, ballstatus, teamsheets
 
 

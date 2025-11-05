@@ -50,3 +50,4 @@ def display_data_summary(path):
     print("Total number of events:", len(all_events))
     print("Unique event ID counts:\n", all_events["eID"].value_counts())
     print("Total number of position frames:", n_frames)
+

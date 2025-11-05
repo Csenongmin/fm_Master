@@ -90,8 +90,8 @@ def nearest_idx_and_dist(ball_xy, team_xy):
     idx  = np.nanargmin(dist, axis=1)         # [T]
     dmin = dist[np.arange(len(dist)), idx]
     return idx, dmin
-
 # ---- Code concat ----
+
 def concat_code(code_dict: dict, key_first='firstHalf', key_second='secondHalf'):
     c1 = code_dict[key_first].code.astype(float)
     c2 = code_dict[key_second].code.astype(float)
@@ -130,6 +130,16 @@ def collect_events_all(events: dict, T1: int, FR: float,
        and keep only one event per global_frame by priority.
     """
     # helpers
+    def _q_as_dict(x):
+        if isinstance(x, dict): return x
+        if isinstance(x, str):
+            try:
+                import json; return json.loads(x)
+            except Exception:
+                try: return eval(x)
+                except Exception: return {}
+        return {}
+
     def _q_pick(d, *keys):
         for k in keys:
             if k in d and d[k] not in (None, "", "None"):
@@ -303,7 +313,7 @@ def build_labels(ev_all: pd.DataFrame,
         return (x<xmin) or (x>xmax) or (y<ymin) or (y>ymax)
 
     def find_segment_end(start_f: int, state: str, ev_row=None) -> int:
-        # 오버라이드: 소유자 계산. possession data 정확하지 않음
+        # 오버라이드 소유자 계산
         owner_override = None
         if ev_row is not None and 'side' in ev_row:
             owner_override = _side_to_code(ev_row['side'])
@@ -377,6 +387,7 @@ def build_labels(ev_all: pd.DataFrame,
             if dead_end is not None: return dead_end
             flip_f = first_possession_flip(start_f, end_cand, params.pos_flip_hold_shot,
                                        owner_override=owner_override)
+            #flip_f = first_possession_flip(start_f, end_cand, params.pos_flip_hold_shot)
             if flip_f is not None: return flip_f
             if contact_end is not None: return contact_end
             if deflect_end is not None: return deflect_end
@@ -386,6 +397,7 @@ def build_labels(ev_all: pd.DataFrame,
 
         if state == PASSING:
             if dead_end is not None: return dead_end
+            #flip_f = first_possession_flip(start_f, end_cand, params.pos_flip_hold_pass)
             flip_f = first_possession_flip(start_f, end_cand, params.pos_flip_hold_pass,
                                        owner_override=owner_override)
             if flip_f is not None: return flip_f
@@ -420,6 +432,7 @@ def build_labels(ev_all: pd.DataFrame,
     labels[auto_air_pass] = PASSING
     return labels, nearest_any
 
+# ---- Frame-level dataset ----
 
 def build_frame_df(xy_objects, events, possession, ballstatus, *, teamsheets=None, pitch=None, FR: float = 25.0,
                    params: LabelParams = LabelParams()) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -476,7 +489,7 @@ def build_frame_df(xy_objects, events, possession, ballstatus, *, teamsheets=Non
         df['ball_x_norm'] = (df['ball_x'] - xmin) / (xmax - xmin)
         df['ball_y_norm'] = (df['ball_y'] - ymin) / (ymax - ymin)
 
-    # 진행각 & 변화
+        # 진행각 & 변화
     df['heading']   = np.arctan2(df['ball_vy'], df['ball_vx'])
     df['d_heading'] = np.abs(np.arctan2(np.sin(df['heading'].diff()), np.cos(df['heading'].diff()))).fillna(0)
 

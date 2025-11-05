@@ -2,16 +2,6 @@ import torch, torch.nn as nn, torch.nn.functional as F_torch
 import math
 from torch.nn.utils import weight_norm
 
-# Dataset/Dataloader
-class SeqDataset(torch.utils.data.Dataset):
-    def __init__(self, X, y):
-        self.X = torch.tensor(X, dtype=torch.float32)
-        self.y = torch.tensor(y, dtype=torch.long)
-    def __len__(self): return len(self.y)
-    def __getitem__(self, i): return self.X[i], self.y[i]
-
-
-# Baseline 1: Conv1D
 class Conv1DBaseline(nn.Module):
     def __init__(self, in_feat, n_classes):
         super().__init__()
@@ -32,8 +22,17 @@ class Conv1DBaseline(nn.Module):
         h = h.mean(dim=-1)          # Global Average Pool -> [B, 64]
         return self.head(h)         # [B, C]
 
+# Dataset/Dataloader
+class SeqDataset(torch.utils.data.Dataset):
+    def __init__(self, X, y):
+        self.X = torch.tensor(X, dtype=torch.float32)
+        self.y = torch.tensor(y, dtype=torch.long)
+    def __len__(self): return len(self.y)
+    def __getitem__(self, i): return self.X[i], self.y[i]
 
-# Baseline 2: TCN
+
+
+
 class CausalConv1d(nn.Module):
     """left-pad only (no future leak) causal Conv1d."""
     def __init__(self, in_ch, out_ch, kernel_size, dilation=1, bias=True):
@@ -62,6 +61,7 @@ class TemporalBlock(nn.Module):
         self.downsample = nn.Conv1d(in_ch, out_ch, kernel_size=1) if in_ch != out_ch else None
 
     def _causal(self, x, conv):
+        # conv is nn.Conv1d with no padding; we do left pad manually for causality
         pad = (self.kernel_size - 1) * self.dilation
         x = F_torch.pad(x, (pad, 0))
         return conv(x)
@@ -118,7 +118,32 @@ class TCNBaseline(nn.Module):
         return self.head(z)
 
 
-# 3. Transformer model
+class GRUBaseline(nn.Module):
+    def __init__(self, in_feat, n_classes,
+                 hidden=128, num_layers=2,
+                 dropout=0.2, bidirectional=False,
+                 use_input_ln=True):
+        super().__init__()
+        self.in_norm = nn.LayerNorm(in_feat) if use_input_ln else nn.Identity()
+        self.gru = nn.GRU(
+            input_size=in_feat,
+            hidden_size=hidden,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=(dropout if num_layers > 1 else 0.0),
+            bidirectional=bidirectional
+        )
+        out_dim = hidden * (2 if bidirectional else 1)
+        self.out_norm = nn.LayerNorm(out_dim)
+        self.head = nn.Linear(out_dim, n_classes)
+
+    def forward(self, x):            # x: [B,T,F]
+        x = self.in_norm(x)
+        out, _ = self.gru(x)         # out: [B,T,H*D]
+        z = out[:, -1, :]            # 마지막 프레임 기준 라벨이면 'last' 선택
+        z = self.out_norm(z)
+        return self.head(z)          # logits [B,C]
+
 class SinusoidalPositionalEncoding(nn.Module):
     def __init__(self, d_model: int, max_len: int = 2048, dropout: float = 0.1):
         super().__init__()
@@ -181,7 +206,7 @@ class TransformerBaseline(nn.Module):
 
     def forward(self, x):   # x: [B, T, F]
         B, T, F = x.shape
-        x = self.in_norm(x)            # 입력 정규화
+        x = self.in_norm(x)            # ★ 안정화 1: 입력 정규화
         h = self.proj_in(x)          # [B,T,D]
         h = self.pos_enc(h)          # [B,T,D]
         #attn_mask = _causal_attn_mask(T, device=x.device) if self.causal else None

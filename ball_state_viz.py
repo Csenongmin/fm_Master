@@ -1,5 +1,5 @@
 # ==================
-# ball state visualization.py
+# ball_state_viz.py
 # ==================
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
